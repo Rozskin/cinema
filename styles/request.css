@@ -85,11 +85,17 @@ h1 {
 .logo-archive {
 	background-image: url(../images/logos/archive.png);
 }
-.logo-xvideos {
-	background-image: url(../images/logos/xvideos.png);
+.logo-adult {
+	background-image: url(../images/logos/adult.webp);
 }
 .logo-hentaibar {
 	background-image: url(../images/logos/hentaibar.jpg);
+}
+.logo-xvideos {
+	background-image: url(../images/logos/xvideos.png);
+}
+.logo-pornhub {
+	background-image: url(../images/logos/pornhub.png);
 }
 .logo-yugen {
 	background-image: url(../images/logos/yugen.png);
