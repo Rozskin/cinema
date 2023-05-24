@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        
+        #player {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="player"></div>
+
+    <script>
+        var query = new URL(location.href).searchParams;
+        var videoURL = query.get("video") || "https://www.pornhub.com/view_video.php?viewkey=6464e4543a556";
+        var embedUrl = "https://www.pornhub.com/embed/";
+
+        var player;
+
+        function createIframe(url) {
+            var iframe = document.createElement("iframe");
+            iframe.src = url;
+            iframe.width = "100%";
+            iframe.height = "100%";
+            iframe.frameBorder = 0;
+            iframe.allow = "autoplay; fullscreen; encrypted-media; picture-in-picture"; // Add allow attribute
+            iframe.setAttribute("autoplay", true);
+            return iframe;
+        }
+
+        function embedVideo() {
+            var videoId;
+
+            if (videoURL.includes("pornhub.com")) {
+                var url = new URL(videoURL);
+                var pathSegments = url.pathname.split("/");
+                videoId = pathSegments[pathSegments.length - 1];
+            } else {
+                var parts = videoURL.split("=");
+                videoId = parts[parts.length - 1];
+            }
+
+            var embedUrl = "https://www.pornhub.com/embed/" + videoId;
+
+            var playerContainer = document.getElementById("player");
+            playerContainer.innerHTML = "";
+            playerContainer.appendChild(createIframe(embedUrl));
+
+            // Update the URL with the video ID
+            var newUrl = window.location.href.split("?")[0] + "?video=" + videoId;
+            window.history.replaceState({}, document.title, newUrl);
+        }
+
+        // Load video automatically if passed in the URL
+        window.onload = function() {
+            var videoParam = getUrlParameter("video");
+            if (videoParam) {
+                videoURL = videoParam;
+                embedVideo();
+            }
+        };
+
+        // Get URL parameter by name
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+            var results = regex.exec(location.search);
+            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+    </script>
+</body>
+
+</html>
