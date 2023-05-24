@@ -1,47 +1,67 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>TikTok Video Embed</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        
+        #player {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
 </head>
+
 <body>
-    <div id="header">
-        <h1>TikTok Video Embed</h1>
-    </div>
-
-    <div id="urlInput">
-        <input type="text" id="videoInput" placeholder="Paste TikTok user and video ID or video URL" />
-        <button onclick="embedVideo()">Embed Video</button>
-    </div>
-
-    <div id="embeddedVideo"></div>
+    <div id="player"></div>
 
     <script>
-        function embedVideo() {
-            var input = document.getElementById("videoInput").value;
+        var query = new URL(location.href).searchParams;
+        var videoURL = query.get("video") || "https://www.tiktok.com/@charlidamelio/video/6933037754521081094";
+        var embedUrl = "https://www.tiktok.com/embed/v2/";
 
-            // Check if input is a URL or user and video ID
+        var player;
+
+        function createIframe(url) {
+            var iframe = document.createElement("iframe");
+            iframe.src = url;
+            iframe.width = "100%";
+            iframe.height = "100%";
+            iframe.frameBorder = 0;
+            iframe.allow = "autoplay; fullscreen";
+            return iframe;
+        }
+
+        function embedVideo() {
+            var embedUrl = "https://www.tiktok.com/embed/v2/";
             var videoId;
             var username;
-            if (input.includes("tiktok.com")) {
-                var url = new URL(input);
+
+            if (videoURL.includes("tiktok.com")) {
+                var url = new URL(videoURL);
                 var pathSegments = url.pathname.split("/");
                 videoId = pathSegments[pathSegments.length - 1];
                 username = pathSegments[pathSegments.length - 3].substring(1);
             } else {
-                var parts = input.split("/");
+                var parts = videoURL.split("/");
                 videoId = parts[parts.length - 1];
                 username = parts[parts.length - 2];
             }
 
             var embedUrl = "https://www.tiktok.com/embed/v2/" + videoId + "?lang=en-US";
 
-            var embeddedVideoDiv = document.getElementById("embeddedVideo");
-            embeddedVideoDiv.innerHTML = '<iframe src="' + embedUrl + '" frameborder="0" allowfullscreen></iframe>';
-
-            document.getElementById("urlInput").style.display = "none";
+            var playerContainer = document.getElementById("player");
+            playerContainer.innerHTML = "";
+            playerContainer.appendChild(createIframe(embedUrl));
 
             // Update the URL with the TikTok username and video ID
-            var newUrl = window.location.href.split("?")[0] + "?=@" + username + "/video/" + videoId;
+            var newUrl = window.location.href.split("?")[0] + "?video=@" + username + "/video/" + videoId;
             window.history.replaceState({}, document.title, newUrl);
         }
 
@@ -49,14 +69,14 @@
         window.onload = function() {
             var videoParam = getUrlParameter("video");
             if (videoParam) {
-                document.getElementById("videoInput").value = videoParam;
+                videoURL = videoParam;
                 embedVideo();
-            } else {
-                var pathSegments = window.location.pathname.split("/");
-                if (pathSegments.length >= 3 && pathSegments[1] === "tiktok.html") {
-                    var username = pathSegments[2].substring(1);
-                    var videoId = pathSegments[3];
-                    document.getElementById("videoInput").value = "@" + username + "/video/" + videoId;
+            } else if (window.location.search.startsWith("?video=@")) {
+                var pathSegments = window.location.search.substring(7).split("/");
+                if (pathSegments.length === 3 && pathSegments[0] === "video") {
+                    var username = pathSegments[1];
+                    var videoId = pathSegments[2];
+                    videoURL = "@" + username + "/video/" + videoId;
                     embedVideo();
                 }
             }
@@ -70,22 +90,6 @@
             return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
         }
     </script>
-
-    <style>
-        #header {
-            display: none;
-        }
-
-        #urlInput {
-            margin-top: 20px;
-        }
-
-        #embeddedVideo iframe {
-            max-width: 605px;
-            min-width: 325px;
-            width: 100%;
-            height: calc(5 * 100vh);
-        }
-    </style>
 </body>
+
 </html>
