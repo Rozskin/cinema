@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TikTok Video Embed</title>
+</head>
+<body>
+    <h1>TikTok Video Embed</h1>
+
+    <div>
+        <input type="text" id="videoInput" placeholder="Paste TikTok user and video ID or video URL" />
+        <button onclick="embedVideo()">Embed Video</button>
+    </div>
+
+    <div id="embeddedVideo"></div>
+
+    <script>
+        function embedVideo() {
+            var input = document.getElementById("videoInput").value;
+
+            // Check if input is a URL or user and video ID
+            var videoId;
+            if (input.includes("tiktok.com")) {
+                var url = new URL(input);
+                var pathSegments = url.pathname.split("/");
+                videoId = pathSegments[pathSegments.length - 1];
+            } else {
+                videoId = input;
+            }
+
+            var embedUrl = "https://www.tiktok.com/embed/v2/" + videoId;
+
+            var embeddedVideoDiv = document.getElementById("embeddedVideo");
+            embeddedVideoDiv.innerHTML = '<iframe src="' + embedUrl + '" frameborder="0" allowfullscreen></iframe>';
+        }
+
+        // Load video automatically if passed in the URL
+        window.onload = function() {
+            var videoParam = getUrlParameter("video");
+            if (videoParam) {
+                document.getElementById("videoInput").value = videoParam;
+                embedVideo();
+            }
+        };
+
+        // Get URL parameter by name
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+            var results = regex.exec(location.search);
+            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TikTok Video Embed</title>
+</head>
+<body>
+    <div id="header">
+        <h1>TikTok Video Embed</h1>
+    </div>
+
+    <div id="urlInput">
+        <input type="text" id="videoInput" placeholder="Paste TikTok user and video ID or video URL" />
+        <button onclick="embedVideo()">Embed Video</button>
+    </div>
+
+    <div id="embeddedVideo"></div>
+
+    <script>
+        function embedVideo() {
+            var input = document.getElementById("videoInput").value;
+
+            // Check if input is a URL or user and video ID
+            var videoId;
+            var username;
+            if (input.includes("tiktok.com")) {
+                var url = new URL(input);
+                var pathSegments = url.pathname.split("/");
+                videoId = pathSegments[pathSegments.length - 1];
+                username = pathSegments[pathSegments.length - 3].substring(1);
+            } else {
+                var parts = input.split("/");
+                videoId = parts[parts.length - 1];
+                username = parts[parts.length - 2];
+            }
+
+            var embedUrl = "https://www.tiktok.com/embed/v2/" + videoId + "?lang=en-US";
+
+            var embeddedVideoDiv = document.getElementById("embeddedVideo");
+            embeddedVideoDiv.innerHTML = '<iframe src="' + embedUrl + '" frameborder="0" allowfullscreen></iframe>';
+
+            document.getElementById("urlInput").style.display = "none";
+
+            // Update the URL with the TikTok username and video ID
+            var newUrl = window.location.href.split("?")[0] + "?=@" + username + "/video/" + videoId;
+            window.history.replaceState({}, document.title, newUrl);
+        }
+
+        // Load video automatically if passed in the URL
+        window.onload = function() {
+            var videoParam = getUrlParameter("video");
+            if (videoParam) {
+                document.getElementById("videoInput").value = videoParam;
+                embedVideo();
+            } else {
+                var pathSegments = window.location.pathname.split("/");
+                if (pathSegments.length >= 3 && pathSegments[1] === "tiktok.html") {
+                    var username = pathSegments[2].substring(1);
+                    var videoId = pathSegments[3];
+                    document.getElementById("videoInput").value = "@" + username + "/video/" + videoId;
+                    embedVideo();
+                }
+            }
+        };
+
+        // Get URL parameter by name
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+            var results = regex.exec(location.search);
+            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+    </script>
+
+    <style>
+        #header {
+            display: none;
+        }
+
+        #urlInput {
+            margin-top: 20px;
+        }
+
+        #embeddedVideo iframe {
+            max-width: 605px;
+            min-width: 325px;
+            width: 100%;
+            height: calc(5 * 100vh);
+        }
+    </style>
+</body>
+</html>

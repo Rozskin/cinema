@@ -116,9 +116,14 @@ h1 {
 	background-image: url(../images/logos/rutube.jpg);
 	background-size: 50px;
 }
-
+.logo-plusbutton {
+	background-image: url(../images/logos/plusbutton.png);
+}
 .logo-ru {
 	background-image: url(../images/russia.png);
+}
+.logo-tiktok {
+	background-image: url(../images/logos/tiktok.png);
 }
 .notice {
 	text-align: center;
