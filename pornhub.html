@@ -29,15 +29,17 @@
         var player;
 
         function createIframe(url) {
-            var iframe = document.createElement("iframe");
-            iframe.src = url;
-            iframe.width = "100%";
-            iframe.height = "100%";
-            iframe.frameBorder = 0;
-            iframe.allow = "autoplay; fullscreen; encrypted-media; picture-in-picture"; // Add allow attribute
-            iframe.setAttribute("autoplay", true);
-            return iframe;
-        }
+			var iframe = document.createElement("iframe");
+			iframe.src = url;
+			iframe.width = "100%";
+			iframe.height = "100%";
+			iframe.frameBorder = 0;
+			iframe.allow = "autoplay; fullscreen; encrypted-media; picture-in-picture"; // Add allow attribute
+			iframe.setAttribute("autoplay", true);
+			iframe.setAttribute("muted", true);
+			return iframe;
+		}
+
 
         function embedVideo() {
             var videoId;
