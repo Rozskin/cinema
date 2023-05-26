@@ -35,13 +35,12 @@
 			iframe.height = "100%";
 			iframe.frameBorder = 0;
 			iframe.allow = "autoplay; fullscreen; encrypted-media; picture-in-picture"; // Add allow attribute
-			iframe.setAttribute("autoplay", true);
-			iframe.setAttribute("muted", true);
 			return iframe;
 		}
 
 
         function embedVideo() {
+			
             var videoId;
 
             if (videoURL.includes("pornhub.com")) {
@@ -58,6 +57,10 @@
             var playerContainer = document.getElementById("player");
             playerContainer.innerHTML = "";
             playerContainer.appendChild(createIframe(embedUrl));
+			
+			// Mute the video
+            var video = playerContainer.querySelector("iframe video");
+            video.muted = true;
 
             // Update the URL with the video ID
             var newUrl = window.location.href.split("?")[0] + "?video=" + videoId;
